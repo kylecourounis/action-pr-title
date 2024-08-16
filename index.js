@@ -43,15 +43,6 @@ async function run() {
 
     core.info(`Pull Request title: "${title}"`)
 
-    // Check if title pass regex
-    const regex = RegExp(core.getInput("regex"))
-    if (!regex.test(title)) {
-      core.setFailed(
-        `Pull Request title "${title}" failed to pass match regex - ${regex}`
-      )
-      return
-    }
-
     // Check min length
     const minLen = parseInt(core.getInput("min_length"))
     if (title.length < minLen) {
@@ -130,6 +121,15 @@ async function run() {
     ) {
       core.setFailed(
         `Pull Request title "${title}" matched with a disallowed suffix - ${suffixes}`
+      )
+      return
+    }
+
+    // Check if title pass regex
+    const regex = RegExp(core.getInput("regex"))
+    if (!regex.test(title)) {
+      core.setFailed(
+        `Pull Request title "${title}" failed to pass match regex - ${regex}`
       )
       return
     }
