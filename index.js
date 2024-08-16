@@ -9,7 +9,7 @@ function validateTitle(title, phrase, caseSensitive, prefixOrSuffix = "prefix") 
     title = title.toLowerCase()
   }
 
-  return prefixOrSuffix === "prefix" ? title.startsWith(phrase) : prefixOrSuffix === "suffix" ? new RegExp(title).test(String.raw`\s[^.*](${phrase}.*)\s`) : false
+  return prefixOrSuffix === "prefix" ? title.startsWith(phrase) : prefixOrSuffix === "suffix" ? new RegExp(String.raw`[^.*]${phrase}`).test(title) : false
 }
 
 async function run() {
