@@ -1,6 +1,6 @@
 name: 'Pull Request title rules'
 description: 'Github action to enforce Pull Request title conventions'
-author: 'deepakputhraya'
+author: 'kylecourounis'
 inputs:
   regex:
     description: 'Regex to validate the pull request title'
@@ -16,6 +16,18 @@ inputs:
     default: ''
   prefix_case_sensitive:
     description: 'Are the allowed & disallowed prefixes case sensitive?'
+    required: false
+    default: 'false'
+  allowed_suffixes:
+    description: 'Comma separated list of suffix allowed to be used in title. eg: JIRA-'
+    required: false
+    default: ''
+  disallowed_suffixes:
+    description: 'Comma separated list of suffix disallowed to be used in title. eg: JIRA'
+    required: false
+    default: ''
+  suffix_case_sensitive:
+    description: 'Are the allowed & disallowed suffixes case sensitive?'
     required: false
     default: 'false'
   min_length:
@@ -37,7 +49,7 @@ inputs:
     default: ${{ github.token }}
 
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'index.js'
 branding:
   icon: 'alert-triangle'
