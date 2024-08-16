@@ -3,19 +3,7 @@ const github = require("@actions/github")
 
 const validEvent = ["pull_request"]
 
-function validateTitle(title, phrase, caseSensitive, prefixOrSuffix = "prefix") {
-  if (!caseSensitive) {
-    phrase = phrase.toLowerCase()
-    title = title.toLowerCase()
-  }
-
-  return prefixOrSuffix === "prefix" ? title.startsWith(phrase) : prefixOrSuffix === "suffix" ? new RegExp(`(^.*)(${phrase})`).test(title) : false
-}
-
 async function run() {
-  const TYPE_PREFIX = "prefix"
-  const TYPE_SUFFIX = "suffix"
-
   try {
     const authToken = core.getInput("github_token", { required: true })
     const eventName = github.context.eventName
@@ -61,16 +49,14 @@ async function run() {
       return
     }
 
-    // Check if title starts with an allowed prefix
-    let prefixes = core.getInput("allowed_prefixes")
     const prefixCaseSensitive =
       core.getInput("prefix_case_sensitive") === "true"
+
+    // Check if title starts with an allowed prefix
+    let prefixes = RegExp(`(${core.getInput("allowed_prefixes")}).*`, !prefixCaseSensitive && "i")
     core.info(`Allowed Prefixes: ${prefixes}`)
     if (
-      prefixes.length > 0 &&
-      !prefixes
-        .split(",")
-        .some((el) => validateTitle(title, el, prefixCaseSensitive, TYPE_PREFIX))
+      prefixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" did not match any of the prefixes - ${prefixes}`
@@ -79,13 +65,10 @@ async function run() {
     }
 
     // Check if title starts with a disallowed prefix
-    prefixes = core.getInput("disallowed_prefixes")
+    prefixes = RegExp(`(${core.getInput("disallowed_prefixes")}).*`, !prefixCaseSensitive && "i")
     core.info(`Disallowed Prefixes: ${prefixes}`)
     if (
-      prefixes.length > 0 &&
-      prefixes
-        .split(",")
-        .some((el) => validateTitle(title, el, prefixCaseSensitive, TYPE_PREFIX))
+      !prefixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" matched with a disallowed prefix - ${prefixes}`
@@ -93,16 +76,14 @@ async function run() {
       return
     }
 
-    // Check if title ends with an allowed suffix
-    let suffixes = new RegExp(core.getInput("allowed_suffixes"))
     const suffixCaseSensitive =
       core.getInput("suffix_case_sensitive") === "true"
+
+    // Check if title ends with an allowed suffix
+    let suffixes = RegExp(`(^.*)${core.getInput("allowed_suffixes")}`, !suffixCaseSensitive && "i")
     core.info(`Allowed Suffixes: ${suffixes}`)
     if (
-      suffixes.length > 0 &&
-      !suffixes
-        .split(",")
-        .some((el) => validateTitle(title, el, suffixCaseSensitive, TYPE_SUFFIX))
+      suffixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" did not match any of the suffixes - ${suffixes}`
@@ -111,13 +92,10 @@ async function run() {
     }
 
     // Check if title ends with a disallowed suffix
-    suffixes = core.getInput("disallowed_suffixes")
+    suffixes = RegExp(`(^.*)${core.getInput("disallowed_suffixes")}`, !suffixCaseSensitive && "i")
     core.info(`Disallowed Suffixes: ${suffixes}`)
     if (
-      suffixes.length > 0 &&
-      suffixes
-        .split(",")
-        .some((el) => validateTitle(title, el, suffixCaseSensitive, TYPE_SUFFIX))
+      !suffixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" matched with a disallowed suffix - ${suffixes}`
