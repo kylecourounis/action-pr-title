@@ -56,7 +56,7 @@ async function run() {
     let prefixes = RegExp(`(${core.getInput("allowed_prefixes")}).*`, !prefixCaseSensitive && "i")
     core.info(`Allowed Prefixes: ${prefixes}`)
     if (
-      prefixes.test(title)
+      !prefixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" did not match any of the prefixes - ${prefixes}`
@@ -83,7 +83,7 @@ async function run() {
     let suffixes = RegExp(`(^.*)${core.getInput("allowed_suffixes")}`, !suffixCaseSensitive && "i")
     core.info(`Allowed Suffixes: ${suffixes}`)
     if (
-      suffixes.test(title)
+      !suffixes.test(title)
     ) {
       core.setFailed(
         `Pull Request title "${title}" did not match any of the suffixes - ${suffixes}`
