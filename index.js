@@ -9,7 +9,7 @@ function validateTitle(title, phrase, caseSensitive, prefixOrSuffix = "prefix") 
     title = title.toLowerCase()
   }
 
-  return prefixOrSuffix === "prefix" ? title.startsWith(phrase) : prefixOrSuffix === "suffix" ? title.endsWith(phrase) : false
+  return prefixOrSuffix === "prefix" ? title.startsWith(phrase) : prefixOrSuffix === "suffix" ? new RegExp(title).test(String.raw`\s[^.*](${phrase}.*)\s`) : false
 }
 
 async function run() {
@@ -94,10 +94,10 @@ async function run() {
     }
 
     // Check if title ends with an allowed suffix
-    let suffixes = core.getInput("allowed_suffixes")
+    let suffixes = new RegExp(core.getInput("allowed_suffixes"))
     const suffixCaseSensitive =
       core.getInput("suffix_case_sensitive") === "true"
-    core.info(`Allowed Suffixes: ${prefixes}`)
+    core.info(`Allowed Suffixes: ${suffixes}`)
     if (
       suffixes.length > 0 &&
       !suffixes
@@ -111,8 +111,8 @@ async function run() {
     }
 
     // Check if title ends with a disallowed suffix
-    suffixes = core.getInput("disallowed_prefixes")
-    core.info(`Disallowed Prefixes: ${prefixes}`)
+    suffixes = core.getInput("disallowed_suffixes")
+    core.info(`Disallowed Suffixes: ${suffixes}`)
     if (
       suffixes.length > 0 &&
       suffixes
