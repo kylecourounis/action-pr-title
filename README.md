@@ -1,6 +1,4 @@
 # Branch Naming Rules with RegEx
-<img alt="GitHub Actions status" src="https://github.com/kylecourounis/action-pr-title/workflows/main/badge.svg">
-
 A GitHub Action to enforce Pull Request title conventions with regular expressions. 
 
 ## Usage
