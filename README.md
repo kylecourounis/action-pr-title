@@ -1,7 +1,7 @@
-# Branch naming rules
+# Branch Naming Rules with RegEx
 <img alt="GitHub Actions status" src="https://github.com/kylecourounis/action-pr-title/workflows/main/badge.svg">
 
-Github action to enforce Pull Request title conventions
+A GitHub Action to enforce Pull Request title conventions with regular expressions. 
 
 ## Usage
 
@@ -12,8 +12,8 @@ steps:
 - uses: kylecourounis/action-pr-title@main
   with:
     regex: '([a-z])+\/([a-z])+' # Regex the title should match.
-    allowed_prefixes: 'feature,fix,JIRA' # title should start with the given prefix
-    disallowed_prefixes: 'feat/,hotfix' # title should not start with the given prefix
+    allowed_prefixes: 'feature|fix|JIRA' # title should start with the given prefix
+    disallowed_prefixes: 'feat/|hotfix' # title should not start with the given prefix
     prefix_case_sensitive: false # title prefix are case insensitive
     min_length: 5 # Min length of the title
     max_length: 20 # Max length of the title
